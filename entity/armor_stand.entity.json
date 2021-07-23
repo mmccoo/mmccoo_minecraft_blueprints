@@ -1,0 +1,276 @@
+{
+	"format_version": "1.10.0",
+	"minecraft:client_entity": {
+		"description": {
+			"identifier": "minecraft:armor_stand",
+			"min_engine_version": "1.8.0",
+			"materials": {
+				"default": 	"armor_stand",
+				//"beam": 	"entity_beam_additive", // Doesn't work on Android
+				"beam": 	"guardian_ghost",
+				"npc": 		"npc",
+				"entity":	"entity"
+			},
+			"textures": {
+			    "default": "textures/entity/armor_stand",
+                            "gen_schem": "textures/gened",
+			    "chunk":   "textures/chunk_outer"
+			},
+			"geometry": {
+			    "default":   "geometry.marker.armor_stand",
+                            "chunk":     "geometry.marker.chunk",
+			    "chunk2":    "geometry.marker.chunk3x3",
+			    "chunk3":    "geometry.marker.chunk5x5",
+                            "schematic": "geometry.marker.schematic"
+			},
+			"animations": {
+				"default_pose": "animation.armor_stand.default_pose",
+				"no_pose": "animation.armor_stand.no_pose",
+				"solemn_pose": "animation.armor_stand.solemn_pose",
+				"athena_pose": "animation.armor_stand.athena_pose",
+				"brandish_pose": "animation.armor_stand.brandish_pose",
+				"honor_pose": "animation.armor_stand.honor_pose",
+				"entertain_pose": "animation.armor_stand.entertain_pose",
+				"salute_pose": "animation.armor_stand.salute_pose",
+				"riposte_pose": "animation.armor_stand.riposte_pose",
+				"zombie_pose": "animation.armor_stand.zombie_pose",
+				"cancan_a_pose": "animation.armor_stand.cancan_a_pose",
+				"cancan_b_pose": "animation.armor_stand.cancan_b_pose",
+				"hero_pose": "animation.armor_stand.hero_pose",
+				"wiggle": "animation.armor_stand.wiggle",
+				"controller.pose": "controller.animation.armor_stand.pose",
+				"controller.wiggling": "controller.animation.armor_stand.wiggle",
+
+			        "marker_schematic": "animation.marker.schematic",
+				"marker_chunk": "animation.marker.chunk"
+			},
+			"scripts": {
+				"initialize": [
+					"variable.armor_stand.pose_index = 0;",
+					"variable.armor_stand.hurt_time = 0;",
+					"variable.marker_chunk_type = 0;",
+					"variable.pos_x = 0;",
+					"variable.pos_y = 0;",
+					"variable.pos_z = 0;",
+					"variable.low_x = 0;",
+					"variable.low_y = 0;",
+					"variable.low_z = 0;",
+					"variable.chunk_x = 0;",
+					"variable.chunk_y = 0;",
+					"variable.chunk_z = 0;",
+					"variable.rot = 0;",
+					"variable.dist = 0;",
+					"variable.dist_u = 0;",
+					"variable.dist_t = 0;",
+					"variable.day = 0;",
+					"variable.day_u = 0;",
+					"variable.day_t = 0;",
+					"variable.day_h = 0;",
+					"variable.day_k = 0;",
+					"variable.day_k2 = 0;",
+					"variable.day_k3 = 0;",
+					"variable.fps = 0;",
+					"variable.fps_u = 0;",
+					"variable.fps_t = 0;",
+					"variable.fps_h = 0;",
+					"variable.time = 0;",
+					"variable.time_u = 0;",
+					"variable.time_t = 0;",
+					"variable.time_h = 0;",
+					"variable.time_k = 0;",
+					"variable.time_k2 = 0;",
+					"variable.time_k3 = 0;"
+				],
+				"animate": [
+					"controller.pose",
+					"controller.wiggling",
+					"marker_schematic",
+					"marker_chunk"
+				],
+				"pre_animation": [
+				    //"variable.marker_sphere = query.get_equipped_item_name('main_hand') == 'banner' && variable.armor_stand.pose_index == 1;",
+				    "variable.marker_chunk = query.get_equipped_item_name('main_hand') == 'banner' && variable.armor_stand.pose_index == 2 || variable.armor_stand.pose_index == 3 || variable.armor_stand.pose_index == 4;",
+				    "variable.marker_chunk_type = (variable.armor_stand.pose_index == 3 ? 1 : (variable.armor_stand.pose_index == 4 ? 2 : 0));",
+
+				    // Filter out diagonal rotations for chunk due to mathematical issues
+				    //"variable.marker_chunk = (query.body_y_rotation == 45 || query.body_y_rotation == -45 || query.body_y_rotation == 135 || query.body_y_rotation == -135) ? 0 : variable.marker_chunk;",
+					"variable.marker_schematic = query.get_equipped_item_name('main_hand') == 'banner' && variable.armor_stand.pose_index >= 5;",
+				    //"variable.marker_distance = query.get_equipped_item_name('main_hand') == 'banner' && variable.armor_stand.pose_index == 6;",
+				//	"variable.marker_day = query.get_equipped_item_name('main_hand') == 'banner' && variable.armor_stand.pose_index == 7;",
+				//	"variable.marker_time = query.get_equipped_item_name('main_hand') == 'banner' && variable.armor_stand.pose_index == 8;",
+				//	"variable.marker_fps = query.get_equipped_item_name('main_hand') == 'banner' && variable.armor_stand.pose_index == 9;",
+				//	"variable.marker_coords = query.get_equipped_item_name('main_hand') == 'banner' && variable.armor_stand.pose_index == 10;",
+				//	"variable.marker_n_coords = query.get_equipped_item_name('main_hand') == 'banner' && variable.armor_stand.pose_index == 11;",
+
+					"variable.rot = query.body_y_rotation;",
+
+					"variable.pos_x = math.floor(query.position(0));",
+					"variable.pos_y = math.floor(query.position(1));",
+					"variable.pos_z = math.floor(query.position(2));",
+
+					"variable.low_x = math.floor(variable.pos_x/16)*16;",
+					"variable.low_z = math.floor(variable.pos_z/16)*16;",
+
+					// Rotation 0
+					"variable.chunk_x = (-((variable.pos_x - variable.low_x)*16))-8;",
+					"variable.chunk_y = -(variable.pos_y*16)-1;",
+					"variable.chunk_z = ( ((variable.pos_z - variable.low_z)*16))+8;",
+
+					// Rotation 90
+					"variable.chunk_x_90 = (-((variable.pos_z - variable.low_z)*16))-8;",
+					"variable.chunk_z_90 = (-((variable.pos_x - variable.low_x)*16))-8;",
+
+					// Rotation -180
+					"variable.chunk_x_180 = (((variable.pos_x - variable.low_x)*16))+8;",
+					"variable.chunk_z_180 = (-((variable.pos_z - variable.low_z)*16))-8;",
+
+					// Rotation -90
+					"variable.chunk_x_m90 = (((variable.pos_z - variable.low_z)*16))+8;",
+					"variable.chunk_z_m90 = (((variable.pos_x - variable.low_x)*16))+8;",
+
+					// Possible rotations
+					//0, 45, 90, 135, -180 -135, -90, -45
+					// Ignoring -45, 45, -135, 135 rotations
+					"variable.chunk_x = variable.rot != 0 ? (variable.rot == 90 ? variable.chunk_x_90 : (variable.rot == -180 ? variable.chunk_x_180 : (variable.rot == -90 ? variable.chunk_x_m90 : 0))) : variable.chunk_x;",
+					"variable.chunk_z = variable.rot != 0 ? (variable.rot == 90 ? variable.chunk_z_90 : (variable.rot == -180 ? variable.chunk_z_180 : (variable.rot == -90 ? variable.chunk_z_m90 : 0))) : variable.chunk_z;",
+
+					// Distance from Camera
+					"variable.dist   = math.floor(query.distance_from_camera);",
+					"variable.dist_t = math.floor(variable.dist/10);",
+					"variable.dist_u = ((variable.dist/10) - variable.dist_t)*10;",
+
+					// Days
+					"variable.day    = query.day;",
+					"variable.day_k3 = math.floor(variable.day/100000);",
+					"variable.day_k2 = math.floor( ( variable.day - ( variable.day_k3*100000 ) ) / 10000 );",
+					"variable.day_k  = math.floor( ( variable.day - ( variable.day_k3*100000) - ( variable.day_k2*10000) ) / 1000 );",
+					"variable.day_h  = math.floor( ( variable.day - ( variable.day_k3*100000) - ( variable.day_k2*10000) - ( variable.day_k*1000) ) / 100 );",
+					"variable.day_t  = math.floor( ( variable.day - ( variable.day_k3*100000) - ( variable.day_k2*10000) - ( variable.day_k*1000) - ( variable.day_h*100) ) / 10 );",
+					"variable.day_u  = math.floor( ( variable.day - ( variable.day_k3*100000) - ( variable.day_k2*10000) - ( variable.day_k*1000) - ( variable.day_h*100) - ( variable.day_t*10) ) );",
+					// If days over max (999999+) set all to 9
+					"variable.day_k3 = variable.day > 999999 ? 9 : variable.day_k3;",
+					"variable.day_k2 = variable.day > 999999 ? 9 : variable.day_k2;",
+					"variable.day_k  = variable.day > 999999 ? 9 : variable.day_k;",
+					"variable.day_h  = variable.day > 999999 ? 9 : variable.day_h;",
+					"variable.day_t  = variable.day > 999999 ? 9 : variable.day_t;",
+					"variable.day_u  = variable.day > 999999 ? 9 : variable.day_u;",
+
+					// Time
+					// Midnight, Sunrise, Day, Noon, Sunset
+					// 0 = 18000. 0.208 = 23000, 0.291 = 1000, 0.5 = 6000, 0.75 = 12000
+					"variable.time_ticks  = query.time_of_day*24000;",
+					"variable.time    = variable.time_ticks <= 6000 ? (variable.time_ticks + 18000) : (variable.time_ticks - 6000);",
+					"variable.time_k3 = math.floor(variable.time/100000);",
+					"variable.time_k2 = math.floor( ( variable.time - ( variable.time_k3*100000 ) ) / 10000 );",
+					"variable.time_k  = math.floor( ( variable.time - ( variable.time_k3*100000) - ( variable.time_k2*10000) ) / 1000 );",
+					"variable.time_h  = math.floor( ( variable.time - ( variable.time_k3*100000) - ( variable.time_k2*10000) - ( variable.time_k*1000) ) / 100 );",
+					"variable.time_t  = math.floor( ( variable.time - ( variable.time_k3*100000) - ( variable.time_k2*10000) - ( variable.time_k*1000) - ( variable.time_h*100) ) / 10 );",
+					"variable.time_u  = math.floor( ( variable.time - ( variable.time_k3*100000) - ( variable.time_k2*10000) - ( variable.time_k*1000) - ( variable.time_h*100) - ( variable.time_t*10) ) );",
+					// If Time over max (999999+) set all to 9
+					//"variable.time_k3 = variable.time > 99999 ? 9 : variable.time_k3;",
+					//"variable.time_k2 = variable.time > 99999 ? 9 : variable.time_k2;",
+					//"variable.time_k  = variable.time > 99999 ? 9 : variable.time_k;",
+					//"variable.time_h  = variable.time > 99999 ? 9 : variable.time_h;",
+					//"variable.time_t  = variable.time > 99999 ? 9 : variable.time_t;",
+					//"variable.time_u  = variable.time > 99999 ? 9 : variable.time_u;",
+
+					// FPS
+					"variable.fps   = 1/query.average_frame_time(30);",
+					"variable.fps_h = math.floor(variable.fps/100);",
+					"variable.fps_t = math.floor( ( variable.fps - ( variable.fps_h*100 ) ) / 10 );",
+					"variable.fps_u = math.floor( variable.fps - ( variable.fps_h*100) - ( variable.fps_t*10) );",
+					"variable.fps_h = variable.fps > 999 ? 9 : variable.fps_h;",
+					"variable.fps_t = variable.fps > 999 ? 9 : variable.fps_t;",
+					"variable.fps_u = variable.fps > 999 ? 9 : variable.fps_u;",
+
+					// Coord X
+					"variable.coord_xm   = variable.pos_x < 0 ? 1 : 0;",
+					"variable.coord_x    = variable.pos_x < 0 ? (variable.pos_x * -1) : variable.pos_x;",
+					"variable.coord_x_k3 = math.floor(variable.coord_x/100000);",
+					"variable.coord_x_k2 = math.floor( ( variable.coord_x - ( variable.coord_x_k3*100000 ) ) / 10000 );",
+					"variable.coord_x_k  = math.floor( ( variable.coord_x - ( variable.coord_x_k3*100000) - ( variable.coord_x_k2*10000) ) / 1000 );",
+					"variable.coord_x_h  = math.floor( ( variable.coord_x - ( variable.coord_x_k3*100000) - ( variable.coord_x_k2*10000) - ( variable.coord_x_k*1000) ) / 100 );",
+					"variable.coord_x_t  = math.floor( ( variable.coord_x - ( variable.coord_x_k3*100000) - ( variable.coord_x_k2*10000) - ( variable.coord_x_k*1000) - ( variable.coord_x_h*100) ) / 10 );",
+					"variable.coord_x_u  = math.floor( ( variable.coord_x - ( variable.coord_x_k3*100000) - ( variable.coord_x_k2*10000) - ( variable.coord_x_k*1000) - ( variable.coord_x_h*100) - ( variable.coord_x_t*10) ) );",
+					// If coord_xs over max (999999+) set all to 9
+					"variable.coord_x_k2 = (variable.coord_x > 99999 || variable.coord_x < -99999) ? 10 : variable.coord_x_k2;",
+					"variable.coord_x_k  = (variable.coord_x > 99999 || variable.coord_x < -99999) ? 10 : variable.coord_x_k;",
+					"variable.coord_x_h  = (variable.coord_x > 99999 || variable.coord_x < -99999) ? 10 : variable.coord_x_h;",
+					"variable.coord_x_t  = (variable.coord_x > 99999 || variable.coord_x < -99999) ? 10 : variable.coord_x_t;",
+					"variable.coord_x_u  = (variable.coord_x > 99999 || variable.coord_x < -99999) ? 10 : variable.coord_x_u;",
+
+					// Coord Y
+					"variable.coord_ym   = variable.pos_y < 0 ? 1 : 0;",
+					"variable.coord_y    = variable.pos_y < 0 ? (variable.pos_y * -1) : variable.pos_y;",
+					"variable.coord_y_k3 = math.floor(variable.coord_y/100000);",
+					"variable.coord_y_k2 = math.floor( ( variable.coord_y - ( variable.coord_y_k3*100000 ) ) / 10000 );",
+					"variable.coord_y_k  = math.floor( ( variable.coord_y - ( variable.coord_y_k3*100000) - ( variable.coord_y_k2*10000) ) / 1000 );",
+					"variable.coord_y_h  = math.floor( ( variable.coord_y - ( variable.coord_y_k3*100000) - ( variable.coord_y_k2*10000) - ( variable.coord_y_k*1000) ) / 100 );",
+					"variable.coord_y_t  = math.floor( ( variable.coord_y - ( variable.coord_y_k3*100000) - ( variable.coord_y_k2*10000) - ( variable.coord_y_k*1000) - ( variable.coord_y_h*100) ) / 10 );",
+					"variable.coord_y_u  = math.floor( ( variable.coord_y - ( variable.coord_y_k3*100000) - ( variable.coord_y_k2*10000) - ( variable.coord_y_k*1000) - ( variable.coord_y_h*100) - ( variable.coord_y_t*10) ) );",
+					// If coord_ys over max (999999+) set all to 9
+					"variable.coord_y_k2 = (variable.coord_y > 99999 || variable.coord_y < -99999) ? 10 : variable.coord_y_k2;",
+					"variable.coord_y_k  = (variable.coord_y > 99999 || variable.coord_y < -99999) ? 10 : variable.coord_y_k;",
+					"variable.coord_y_h  = (variable.coord_y > 99999 || variable.coord_y < -99999) ? 10 : variable.coord_y_h;",
+					"variable.coord_y_t  = (variable.coord_y > 99999 || variable.coord_y < -99999) ? 10 : variable.coord_y_t;",
+					"variable.coord_y_u  = (variable.coord_y > 99999 || variable.coord_y < -99999) ? 10 : variable.coord_y_u;",
+
+					// Coord Z
+					"variable.coord_zm   = variable.pos_z < 0 ? 1 : 0;",
+					"variable.coord_z    = variable.pos_z < 0 ? (variable.pos_z * -1) : variable.pos_z;",
+					"variable.coord_z_k3 = math.floor(variable.coord_z/100000);",
+					"variable.coord_z_k2 = math.floor( ( variable.coord_z - ( variable.coord_z_k3*100000 ) ) / 10000 );",
+					"variable.coord_z_k  = math.floor( ( variable.coord_z - ( variable.coord_z_k3*100000) - ( variable.coord_z_k2*10000) ) / 1000 );",
+					"variable.coord_z_h  = math.floor( ( variable.coord_z - ( variable.coord_z_k3*100000) - ( variable.coord_z_k2*10000) - ( variable.coord_z_k*1000) ) / 100 );",
+					"variable.coord_z_t  = math.floor( ( variable.coord_z - ( variable.coord_z_k3*100000) - ( variable.coord_z_k2*10000) - ( variable.coord_z_k*1000) - ( variable.coord_z_h*100) ) / 10 );",
+					"variable.coord_z_u  = math.floor( ( variable.coord_z - ( variable.coord_z_k3*100000) - ( variable.coord_z_k2*10000) - ( variable.coord_z_k*1000) - ( variable.coord_z_h*100) - ( variable.coord_z_t*10) ) );",
+					// If coord_zs over max (999999+) set all to 9
+					"variable.coord_z_k2 = (variable.coord_z > 99999 || variable.coord_z < -99999) ? 10 : variable.coord_z_k2;",
+					"variable.coord_z_k  = (variable.coord_z > 99999 || variable.coord_z < -99999) ? 10 : variable.coord_z_k;",
+					"variable.coord_z_h  = (variable.coord_z > 99999 || variable.coord_z < -99999) ? 10 : variable.coord_z_h;",
+					"variable.coord_z_t  = (variable.coord_z > 99999 || variable.coord_z < -99999) ? 10 : variable.coord_z_t;",
+					"variable.coord_z_u  = (variable.coord_z > 99999 || variable.coord_z < -99999) ? 10 : variable.coord_z_u;",
+
+					// NETHER COORDS
+					// Coord X
+					"variable.n_coord_xm   = variable.pos_x < 0 ? 1 : 0;",
+					"variable.n_coord_x    = variable.pos_x < 0 ? ((variable.pos_x/8) * -1) : variable.pos_x/8;",
+					"variable.n_coord_x_k3 = math.floor(variable.n_coord_x/100000);",
+					"variable.n_coord_x_k2 = math.floor( ( variable.n_coord_x - ( variable.n_coord_x_k3*100000 ) ) / 10000 );",
+					"variable.n_coord_x_k  = math.floor( ( variable.n_coord_x - ( variable.n_coord_x_k3*100000) - ( variable.n_coord_x_k2*10000) ) / 1000 );",
+					"variable.n_coord_x_h  = math.floor( ( variable.n_coord_x - ( variable.n_coord_x_k3*100000) - ( variable.n_coord_x_k2*10000) - ( variable.n_coord_x_k*1000) ) / 100 );",
+					"variable.n_coord_x_t  = math.floor( ( variable.n_coord_x - ( variable.n_coord_x_k3*100000) - ( variable.n_coord_x_k2*10000) - ( variable.n_coord_x_k*1000) - ( variable.n_coord_x_h*100) ) / 10 );",
+					"variable.n_coord_x_u  = math.floor( ( variable.n_coord_x - ( variable.n_coord_x_k3*100000) - ( variable.n_coord_x_k2*10000) - ( variable.n_coord_x_k*1000) - ( variable.n_coord_x_h*100) - ( variable.n_coord_x_t*10) ) );",
+					// If n_coord_xs over max (999999+) set all to 9
+					"variable.n_coord_x_k2 = (variable.n_coord_x > 99999 || variable.n_coord_x < -99999) ? 10 : variable.n_coord_x_k2;",
+					"variable.n_coord_x_k  = (variable.n_coord_x > 99999 || variable.n_coord_x < -99999) ? 10 : variable.n_coord_x_k;",
+					"variable.n_coord_x_h  = (variable.n_coord_x > 99999 || variable.n_coord_x < -99999) ? 10 : variable.n_coord_x_h;",
+					"variable.n_coord_x_t  = (variable.n_coord_x > 99999 || variable.n_coord_x < -99999) ? 10 : variable.n_coord_x_t;",
+					"variable.n_coord_x_u  = (variable.n_coord_x > 99999 || variable.n_coord_x < -99999) ? 10 : variable.n_coord_x_u;",
+
+					// n_coord Z
+					"variable.n_coord_zm   = variable.pos_z < 0 ? 1 : 0;",
+					"variable.n_coord_z    = variable.pos_z < 0 ? ((variable.pos_z/8) * -1) : variable.pos_z/8;",
+					"variable.n_coord_z_k3 = math.floor(variable.n_coord_z/100000);",
+					"variable.n_coord_z_k2 = math.floor( ( variable.n_coord_z - ( variable.n_coord_z_k3*100000 ) ) / 10000 );",
+					"variable.n_coord_z_k  = math.floor( ( variable.n_coord_z - ( variable.n_coord_z_k3*100000) - ( variable.n_coord_z_k2*10000) ) / 1000 );",
+					"variable.n_coord_z_h  = math.floor( ( variable.n_coord_z - ( variable.n_coord_z_k3*100000) - ( variable.n_coord_z_k2*10000) - ( variable.n_coord_z_k*1000) ) / 100 );",
+					"variable.n_coord_z_t  = math.floor( ( variable.n_coord_z - ( variable.n_coord_z_k3*100000) - ( variable.n_coord_z_k2*10000) - ( variable.n_coord_z_k*1000) - ( variable.n_coord_z_h*100) ) / 10 );",
+					"variable.n_coord_z_u  = math.floor( ( variable.n_coord_z - ( variable.n_coord_z_k3*100000) - ( variable.n_coord_z_k2*10000) - ( variable.n_coord_z_k*1000) - ( variable.n_coord_z_h*100) - ( variable.n_coord_z_t*10) ) );",
+					// If n_coord_zs over max (999999+) set all to 9
+					"variable.n_coord_z_k2 = (variable.n_coord_z > 99999 || variable.n_coord_z < -99999) ? 10 : variable.n_coord_z_k2;",
+					"variable.n_coord_z_k  = (variable.n_coord_z > 99999 || variable.n_coord_z < -99999) ? 10 : variable.n_coord_z_k;",
+					"variable.n_coord_z_h  = (variable.n_coord_z > 99999 || variable.n_coord_z < -99999) ? 10 : variable.n_coord_z_h;",
+					"variable.n_coord_z_t  = (variable.n_coord_z > 99999 || variable.n_coord_z < -99999) ? 10 : variable.n_coord_z_t;",
+					"variable.n_coord_z_u  = (variable.n_coord_z > 99999 || variable.n_coord_z < -99999) ? 10 : variable.n_coord_z_u;"
+				]
+			},
+			"render_controllers": [
+			    "controller.render.armor_stand",
+			    { "controller.render.marker.chunk": "variable.marker_chunk" },
+                            { "controller.render.marker.schematic": "variable.marker_schematic" }
+			],
+			"enable_attachables": true
+		}
+	}
+}

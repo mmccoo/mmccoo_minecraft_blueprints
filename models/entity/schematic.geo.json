@@ -1,0 +1,39 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.marker.schematic",
+				"texture_width": 1280,
+				"texture_height": 1280,
+				"visible_bounds_width": 4096,
+				"visible_bounds_height": 4096,
+				"visible_bounds_offset": [0, 0.25, 0]
+			},
+			"bones": [
+				{
+				    "name": "somerandomname",
+				    "pivot": [0, 0, 0],
+				    "cubes": [
+                                        {
+                                            "origin": [-1032, 2, -1032],
+					    "size": [2048, 1, 2048],
+					    "uv": {
+					        "up": {"uv": [128, 128], "uv_size": [-128, -128]}
+					    }
+				        },
+
+                                        {
+                                            "origin": [-1032, 18, -1032],
+					    "size": [2048, 1, 2048],
+					    "uv": {
+					        "up": {"uv": [128, 256], "uv_size": [-128, -128]}
+					    }
+				        }
+
+                                    ]
+				}
+			]
+		}
+	]
+}
