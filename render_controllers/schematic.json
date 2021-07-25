@@ -1,0 +1,16 @@
+{
+	"format_version": "1.8.0",
+	"render_controllers": {
+	    "controller.render.marker.schematic": {
+                "geometry": "Geometry.schematic",
+                "materials": [
+		    {
+			"*": "Material.beam"
+		    }
+		],
+		"textures": [
+                    "Texture.gen_schem"
+		]
+	    }
+	}
+}
