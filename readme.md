@@ -17,11 +17,10 @@ It involves the following steps:
 
 
 To write this I started with Foxy's Markers [Experimental] resource pack
-# Created: 22/05/2021 [dd/mm/YYYY]
-# Version: 1.0.2
-# Made for MC Bedrock Edition 1.16.220+
-# For more info visit https://www.foxynotail.com
-#
+Created: 22/05/2021 [dd/mm/YYYY]
+Version: 1.0.2
+Made for MC Bedrock Edition 1.16.220+
+For more info visit https://www.foxynotail.com
 
 
 Much of this code is lifted from foxynotail's markers addon.
