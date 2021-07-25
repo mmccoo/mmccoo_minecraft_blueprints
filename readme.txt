@@ -11,9 +11,9 @@ It involves the following steps:
 * in minecraft, create an armor stand, give it a banner, and iterate through the poses. The guidance objects show show up after the chunk borders.
 
 
-![alt text](http://screenshots/Screenshot_20210725-163544.png)
+![alt text](https://raw.githubusercontent.com/mmccoo/mmccoo_minecraft_blueprints/main/screenshots/Screenshot_20210725-163544.png)
 
-![alt text](http://screenshots/Screenshot_20210725-163615.png)
+![alt text](screenshots/Screenshot_20210725-163615.png)
 
 
 To write this I started with Foxy's Markers [Experimental] resource pack
