@@ -88,8 +88,37 @@ if (yh>30):
     print("height is {}. some layers will be below the armor stand. this is done for designs taller than 30".format(yh))
     height_adjustment = int(yh/2)
 
+pallette = ['aqua',  'azure',     'bisque', 'black',     'blanchedalmond',
+            'blue', 'blueviolet', 'brown',  'burlywood', 'cadetblue',
 
-colors = {}
+            'chartreuse', 'chocolate', 'cornsilk',     'crimson',  'cyan',
+            'darkblue',   'darkcyan', 'darkgoldenrod', 'darkgray', 'darkgrey',
+
+            'darkgreen', 'darkkhaki', 'darkmagenta', 'darkolivegreen', 'darkorange',
+            'darkorchid', 'darkred', 'darksalmon', 'darkseagreen', 'darkslateblue',
+
+            'darkslategray', 'darkturquoise', 'darkviolet', 'deeppink', 'deepskyblue',
+            'firebrick', 'floralwhite', 'forestgreen', 'fuchsia', 'gainsboro',
+
+            'gold', 'gray', 'green', 'honeydew', 'indianred',
+            'lawngreen', 'lightcoral', 'lightgreen', 'lightpink', 'lightseagreen',
+
+            'lightskyblue', 'lightslategrey', 'lightyellow', 'lime', 'linen',
+            'magenta', 'maroon', 'mediumaquamarine', 'mediumblue', 'mediumorchid',
+
+            'mediumpurple', 'mediumseagreen', 'mediumslateblue', 'mediumturquoise', 'mediumvioletred',
+            'midnightblue', 'mintcream',  'moccasin', 'navy', 'oldlace',
+
+            'orangered', 'orchid', 'palegoldenrod', 'palevioletred', 'peachpuff',
+            'peru', 'plum', 'powderblue', 'purple', 'rebeccapurple',
+
+            'red', 'rosybrown', 'royalblue', 'saddlebrown', 'seagreen',
+            'seashell', 'sienna', 'slateblue', 'slategray', 'snow',
+
+            'springgreen', 'steelblue', 'tan', 'teal', 'thistle',
+            'tomato', 'turquoise', 'violet', 'yellow', 'yellowgreen']
+
+
 
 for (x,y,z) in points:
 
@@ -110,11 +139,11 @@ for (x,y,z) in points:
     x = x + (5+int(y/10))*texture_size
     z = z + (y%10)*texture_size
 
-    if not y in colors:
-        # color plus alpha/transparency
-        colors[y] = ImageColor.getrgb(random.choice(list(ImageColor.colormap.values()))) + (128,)
+    # if not y in colors:
+    #     # color plus alpha/transparency
+    #     colors[y] = ImageColor.getrgb(random.choice(list(ImageColor.colormap.values()))) + (128,)
 
-    image.putpixel((x,z), colors[y])
+    image.putpixel((x,z), ImageColor.getrgb(pallette[y])+(128,))
 
 
 image.save("gened.png")
